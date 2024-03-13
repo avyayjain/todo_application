@@ -20,8 +20,7 @@ from src.db.functions.logout import user_login, user_logout
 token_router = APIRouter()
 
 
-
-
+# pydantic models
 class AuthUser(BaseModel):
     email_id: EmailStr
     password: str
@@ -82,7 +81,7 @@ def authenticate_user(email_id: str, password: str):
     @rtype: object
     """
     try:
-        hash_pass, logout, user_id= find_user_pass_email_id(email_id)
+        hash_pass, logout, user_id = find_user_pass_email_id(email_id)
     except ItemNotFound:
         return False
     except UserErrors:
@@ -243,20 +242,17 @@ def get_current_active_user(current_user: UserBase = Depends(get_current_user)):
     return current_user
 
 
+# API Endpoints for login Token and logout
 @token_router.post("", response_model=Token)
 def login_for_access_token(form_data: AuthUser):
     """
     API For Token Authorisation username
-
+    email_id: Email ID
+    email_id: email field
+    password: password field
+    password: Str
     """
-    # try:
-    #     check_email(email=form_data.email)
-    # except:
-    #     raise HTTPException(
-    #         status_code=status.HTTP_401_UNAUTHORIZED,
-    #         detail="Incorrect Email",
-    #         headers={"WWW-Authenticate": "Bearer"},
-    #     )
+
     try:
         user = authenticate_user(form_data.email_id, form_data.password)
     except UserErrors as e:
@@ -298,11 +294,11 @@ def login_for_access_token(form_data: AuthUser):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
+# API Endpoints for logout
 @token_router.post("/logout")
 def logout_endpoint(current_user: UserBase = Depends(get_current_active_user)):
     """
     API For Token Authorisation
-
     """
 
     if not current_user:
