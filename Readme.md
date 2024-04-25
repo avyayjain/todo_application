@@ -27,7 +27,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES
 ```
 ### 5. run the server
 ```bash
-python main.py
+python3 -m uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 ### 6. you can also build the docker container by running the following command
 ```bash
